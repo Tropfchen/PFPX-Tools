@@ -13,7 +13,7 @@ from typing import Iterable, Iterator
 
 WX_REGEX = re.compile(r"^(?:(TAF|METAR) )?(?P<icao>[A-Z0-9]{4}) \d{6}Z ")
 HEADER_FILL = bytes([0x3F]) * 10
-RETRO_AIRPORTS_PAIRS = {"EDDB": "EDDT", "VHHH": "VHHX"}
+RETRO_AIRPORTS_PAIRS = {"EDDB": "EDDT", "VHHH": "VHHX"} # copies weather from nearby existing airport, to historic ones. 
 _WINDS_COMPRESSION = 1  # about 100% saving compared to store, higher is pointless
 _WX_COMPRESSION = 3
 
@@ -95,10 +95,7 @@ class WeatherCompiler:
         self.gribs.write(
             f"[DATA_{forecast_delta:02}]".encode()
         )  # GRIB_VALID_TIME - GRIB_REF_TIME
-        self.gribs.write(
-            forecasted_time.strftime("%Y%m%d%H%M").encode().hex().encode()
-        )  # GRIB_VALID_TIME
-        self.gribs.write(grib.hex().encode())
+        self.gribs.write(grib.hex().encode()) 
 
         self._grib_count += 1
 
@@ -166,6 +163,8 @@ class WeatherCompiler:
                 normalized = self._normalize_wx_string(value)
                 yield station, normalized
         else:
+            if isinstance(wx, str):
+                wx = wx.splitlines()
             try:
                 for value in wx:
                     match = WX_REGEX.search(value)
