@@ -1,5 +1,17 @@
 [project]
+name = "pfpx-tools"
+version = "0.1.0"
+description = "Compiles Weather, NAT and PACOTS tracks into format used by PFPX"
+readme = "README.md"
 requires-python = ">= 3.8"
+dependencies = []
+
+[project.scripts]
+pfpx-tools = "pfpx_tools:main"
+
+[build-system]
+requires = ["uv_build>=0.12.1,<0.13.0"]
+build-backend = "uv_build"
 
 [tool.ruff.lint]
 preview = true
